@@ -7,7 +7,6 @@
 #include "Frota.h"
 using namespace std;
 
-
 Frota::Frota()
 {
 	addCamiao(Camiao(400,7));
@@ -21,7 +20,7 @@ Frota::Frota()
 	addCamiao(Camiao(12000,40));
 }
 
-void  Frota::addCamiao(Camiao camiao)
+void Frota::addCamiao(Camiao camiao)
 	{
 		camiao.setId(numeroCamioes);
 		numeroCamioes++;

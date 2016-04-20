@@ -11,6 +11,7 @@ using namespace std;
 
 Camiao::Camiao(int capacidadePeso,int capacidadeVolume)
 {
+id = 0;
 this->capacidade_peso=capacidadePeso;
 this->capacidade_volume=capacidadeVolume;
 }

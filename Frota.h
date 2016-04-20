@@ -5,8 +5,8 @@
  *      Author: up201404022
  */
 
-#ifndef SRC_FROTA_H_
-#define SRC_FROTA_H_
+#ifndef FROTA_H_
+#define FROTA_H_
 #include <iostream>
 #include <string>
 #include <stdlib.h>
@@ -14,21 +14,20 @@
 #include <list>
 #include <limits>
 #include <cmath>
+#include "Camiao.h"
 using namespace std;
 
 class Frota
 {
 	private:
 	vector<Camiao> frota;
-	int numeroCamioes=1;
+	int numeroCamioes;
 	public:
 	vector<Camiao> getFrota();
 	void addCamiao(Camiao camiao );
-
-
-
+    Frota();
 };
 
 
 
-#endif /* SRC_FROTA_H_ */
+#endif /* FROTA_H_ */

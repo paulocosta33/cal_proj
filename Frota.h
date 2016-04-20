@@ -20,12 +20,12 @@ using namespace std;
 class Frota
 {
 	private:
-	vector<Camiao> frota;
-	int numeroCamioes;
+		int numeroCamioes;
 	public:
-	vector<Camiao> getFrota();
-	void addCamiao(Camiao camiao );
-    Frota();
+		vector<Camiao *> frota;
+		vector<Camiao *> getFrota();
+		void addCamiao(Camiao camiao );
+		Frota(vector<Camiao *> frota);
 };
 
 

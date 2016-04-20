@@ -16,7 +16,6 @@ Item::Item(string nome,int valor, int peso, int volume, string destino, int fatu
 	this->volume=volume;
 	this->peso=peso;
 	this->fatura=fatura;
-	cout << "New Object\n";
 }
 
 string Item::getNome(){return nome;}

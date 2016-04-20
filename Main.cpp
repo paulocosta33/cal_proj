@@ -7,8 +7,10 @@
 //============================================================================
 
 #include "Graph.h"
+#include "Frota.h"
 #include <stdio.h>
 #include <iostream>
+#include "Mapa.h"
 using namespace std;
 
 int main() {
@@ -22,6 +24,48 @@ int main() {
 	//cout << v.front() << endl; //heap max
 	v.push_back(99);
 	push_heap (v.begin(),v.end());
+
+	//adicionar estaticos
+	//algoritmo path camiao
+	//file reader
+	//items recebidos nos nos, total da compra
+
+	Item item1("cadeira",20,2,10,"f",0001);
+	Item item2("quadro",70,2,10,"c",0002);
+	Item item3("mesa",20,2,10,"b",0003);
+	Item item4("cofre",35,2,10,"e",0004);
+	Item item5("cadeira",20,2,10,"c",0005);
+
+	Camiao c1(400,7);
+	Camiao c2(400,7);
+	Camiao c3(400,7);
+	Camiao c4(1500,15);
+	Camiao c5(1500,15);
+	Camiao c6(1500,15);
+	Camiao c7(12000,40);
+	Camiao c8(12000,40);
+	Camiao c9(12000,40);
+
+	vector<Camiao *> frota;
+	//frota.push_back(&c1);
+	Frota fleet(frota);
+	fleet.addCamiao(c1);
+	fleet.addCamiao(c2);
+	fleet.addCamiao(c3);
+	fleet.addCamiao(c4);
+	fleet.addCamiao(c5);
+	fleet.addCamiao(c6);
+	fleet.addCamiao(c7);
+	fleet.addCamiao(c8);
+	fleet.addCamiao(c9);
+
+	c1.getItems().push_back(&item1);
+	c1.getItems().push_back(&item2);
+	c1.getItems().push_back(&item3);
+	c1.getItems().push_back(&item4);
+	c1.getItems().push_back(&item5);
+
+
 
 	string node_s;
 	string node_f;
@@ -84,7 +128,12 @@ int main() {
 		cout << g.path_res[k] << " ";
 	}
 
-	//criar camioes com cap total, testar com items
+	cout << "\n";
+	cout << "Shortest path with all the destinations: \n";
+
+	Mapa<string> m1;
+	m1.readFiles();
+
 }
 
 

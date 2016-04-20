@@ -7,26 +7,19 @@
 #include "Frota.h"
 using namespace std;
 
-Frota::Frota()
+Frota::Frota(vector<Camiao *> f)
 {
-	addCamiao(Camiao(400,7));
-	addCamiao(Camiao(400,7));
-	addCamiao(Camiao(400,7));
-	addCamiao(Camiao(1500,15));
-	addCamiao(Camiao(1500,15));
-	addCamiao(Camiao(1500,15));
-	addCamiao(Camiao(12000,40));
-	addCamiao(Camiao(12000,40));
-	addCamiao(Camiao(12000,40));
+	numeroCamioes =0;
+	frota = f;
 }
 
 void Frota::addCamiao(Camiao camiao)
 	{
-		camiao.setId(numeroCamioes);
+		//camiao.setId(numeroCamioes);
 		numeroCamioes++;
-		frota.push_back(camiao);
+		frota.push_back(&camiao);
 	}
-vector<Camiao> Frota::getFrota()
+vector<Camiao *> Frota::getFrota()
 {
-return frota;
+	return frota;
 }

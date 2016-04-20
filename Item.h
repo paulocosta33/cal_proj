@@ -27,11 +27,11 @@ class Item
   	int getPeso();
   	int getVolume();
    	Item(string nome,int valor, int peso, int volume, string destino, int fatura);
+ 	string dest;
 
    private:
    	string nome;
    	double valor;
-   	string dest;
    	int fatura;
    	int volume;
    	int peso;

@@ -14,6 +14,7 @@
 #include <limits>
 #include <cmath>
 #include <stddef.h>
+#include "Frota.h"
 using namespace std;
 
 const int NOT_VISITED = 0;
@@ -59,6 +60,8 @@ public:
 	bool processing;
 	int indegree;
 	double dist; //distancia acumulada
+	double latitude;
+	double longitude;
 	Vertex(T in);
 	vector<Edge<T>  > adj;
 	friend class Graph<T>;
@@ -255,8 +258,11 @@ void Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
 	vS->addEdge(vD,w);
 }
 
+
 template<class T>
-void Graph<T>::dijkstraShortestPath(const T &s) {
+void Graph<T>::dijkstraShortestPath(const T &s)
+
+{
 
 	for(unsigned int i = 0; i < vertexSet.size(); i++) {
 		vertexSet[i]->path = NULL;
@@ -282,8 +288,10 @@ void Graph<T>::dijkstraShortestPath(const T &s) {
 		for(unsigned int i = 0; i < v->adj.size(); i++) { // adj are the adj edge
 			Vertex<T>* w = v->adj[i].dest;    //w -> vertice de destino da edge
 
+
 			if(v->dist + v->adj[i].weight < w->dist ) {
 
+				//for(int k =0 ; k < getFrota.size(); k )
 				w->dist = v->dist + v->adj[i].weight;
 				w->path = v;
 

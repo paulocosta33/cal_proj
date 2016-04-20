@@ -14,6 +14,7 @@
 #include <list>
 #include <limits>
 #include <cmath>
+#include "Item.h"
 
 using namespace std;
 
@@ -21,10 +22,16 @@ class Camiao
 {
 	public:
 	 Camiao(int capacidadeVolume,int capacidadePeso);
+	 vector <Item *> items;
 	 int getPeso();
 	 int getVolume();
 	 int getId();
 	 void setId(int id);
+	 void loadDestinos();
+	 vector <Item *> getItems(){return items;}
+	 vector <string> getDestinos_atuais();
+	 vector <string> destinos_atuais;
+
 
 	private:
 	 int capacidade_volume;

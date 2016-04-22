@@ -69,7 +69,7 @@ int main() {
 
 	string node_s;
 	string node_f;
-
+/*
 	//info
 	string x1 = "a";
 	string x2 = "b";
@@ -113,8 +113,11 @@ int main() {
 	g.addEdge(b.info,e.info,1);
 	g.addEdge(e.info,f.info,3);
 	g.addEdge(c.info,f.info,3);
-
-	g.dijkstraShortestPath(a.info);
+*/
+	Mapa<string> m1;
+	m1.readFiles();
+	m1.InicializeMap();
+	m1.grafo.dijkstraShortestPath(m1.grafo.vertexSet[0]->info);
 
 	cout << "Please select the starter node: \n";
 	cin >> node_s;
@@ -122,17 +125,15 @@ int main() {
 	cin >> node_f;
 	cout << "The shortest path is: \n";
 
-	g.getPath(node_s,node_f);
-	for(unsigned int k = 0;k < g.path_res.size();k++)
+	m1.grafo.getPath(node_s,node_f);
+	for(unsigned int k = 0;k < m1.grafo.path_res.size();k++)
 	{
-		cout << g.path_res[k] << " ";
+		cout << m1.grafo.path_res[k] << " ";
 	}
 
 	cout << "\n";
 	cout << "Shortest path with all the destinations: \n";
-
-	Mapa<string> m1;
-	m1.readFiles();
+	cout << m1.grafo.vertexSet[235]->adj[1].weight;
 
 }
 

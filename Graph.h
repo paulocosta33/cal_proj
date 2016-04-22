@@ -38,8 +38,11 @@ public:
 	friend class Graph<T>;
 	friend class Vertex<T>;
 	Vertex<T> * dest;
-	double weight;
-	Edge();
+	int weight;
+	string nome;
+	string id;
+	bool duploSentido;
+	Edge(){};
 };
 
 template <class T>
@@ -59,6 +62,7 @@ public:
 	bool visited;
 	bool processing;
 	int indegree;
+	string id;
 	double dist; //distancia acumulada
 	double latitude;
 	double longitude;
@@ -81,7 +85,8 @@ public:
 };
 
 template <class T>
-bool Vertex<T>::removeEdgeTo(Vertex<T> *d) {
+bool Vertex<T>::removeEdgeTo(Vertex<T> *d)
+{
 	d->indegree--; //adicionado do exercicio 5
 	typename vector<Edge<T> >::iterator it= adj.begin();
 	typename vector<Edge<T> >::iterator ite= adj.end();
@@ -145,7 +150,7 @@ struct vertex_greater_than {
  */
 template <class T>
 class Graph {
-	vector<Vertex<T> *> vertexSet;
+
 	void dfs(Vertex<T> *v, vector<T> &res) const;
 	int numCycles; //
 	void dfsVisit(Vertex<T> *v);
@@ -157,6 +162,8 @@ class Graph {
 
 public:
 	Graph(vector<Vertex<T>*> v);
+	Graph(){};
+	vector<Vertex<T> *> vertexSet;
 	bool addVertex(const T &in);
 	void addEdge(const T &sourc,const T &dest, double w);
 	bool removeVertex(const T &in);

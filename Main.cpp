@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <iostream>
 #include "Mapa.h"
+#include "mapa2.h"
 using namespace std;
 
 int main() {
@@ -114,10 +115,10 @@ int main() {
 	g.addEdge(e.info,f.info,3);
 	g.addEdge(c.info,f.info,3);
 */
-	Mapa<string> m1;
-	m1.readFiles();
-	m1.InicializeMap();
-	m1.grafo.dijkstraShortestPath(m1.grafo.vertexSet[0]->info);
+	Mapa2<string> m2;
+	Graph<string>* grafo= m2.readfiles();
+	cout << grafo->vertexSet[0]->adj[0].weight;
+	//grafo->dijkstraShortestPath(grafo->vertexSet[1]->info);
 
 	cout << "Please select the starter node: \n";
 	cin >> node_s;
@@ -125,15 +126,18 @@ int main() {
 	cin >> node_f;
 	cout << "The shortest path is: \n";
 
-	m1.grafo.getPath(node_s,node_f);
-	for(unsigned int k = 0;k < m1.grafo.path_res.size();k++)
+	grafo->dijkstraShortestPath(node_s);
+	grafo->getPath(node_s,node_f);
+	for(unsigned int k = 0;k < grafo->path_res.size();k++)
 	{
-		cout << m1.grafo.path_res[k] << " ";
+		cout <<grafo->path_res[k] << " ";
 	}
 
 	cout << "\n";
 	cout << "Shortest path with all the destinations: \n";
-	cout << m1.grafo.vertexSet[235]->adj[1].weight;
+
+
+
 
 }
 

@@ -35,18 +35,21 @@ class Edge {
 
 public:
 	Edge(Vertex<T> *d, double w);
+	Edge(Vertex<T> *d,T I);
 	friend class Graph<T>;
 	friend class Vertex<T>;
 	Vertex<T> * dest;
-	int weight;
+	double weight;
 	string nome;
-	string id;
+	T info;
 	bool duploSentido;
 	Edge(){};
 };
 
 template <class T>
 Edge<T>::Edge(Vertex<T> *d, double w): dest(d), weight(w){}
+template <class T>
+Edge<T>::Edge(Vertex<T> *d,T I): dest(d),info(I){};
 
 
 /*
@@ -71,6 +74,7 @@ public:
 	friend class Graph<T>;
 	Vertex* path;
 	void addEdge(Vertex<T> *dest, double w);
+	void addEdge(Vertex<T> *dest, T info);
 	bool removeEdgeTo(Vertex<T> *d);
 
 	T getInfo() const;
@@ -112,7 +116,12 @@ void Vertex<T>::addEdge(Vertex<T> *dest, double w) {
 	Edge<T> edgeD(dest,w);
 	adj.push_back(edgeD);
 }
-
+template <class T>
+void Vertex<T>::addEdge(Vertex<T> *dest, T info)
+{
+	Edge<T> edgeD(dest,info);
+	adj.push_back(edgeD);
+}
 //--
 template <class T>
 T Vertex<T>::getInfo() const {
@@ -162,10 +171,14 @@ class Graph {
 
 public:
 	Graph(vector<Vertex<T>*> v);
-	Graph(){};
+	Graph()
+	{P = NULL;
+	 W = 0;
+	 numCycles = 0;};
 	vector<Vertex<T> *> vertexSet;
-	bool addVertex(const T &in);
+	bool addVertex(const T &in,double latitude,double longitude);
 	void addEdge(const T &sourc,const T &dest, double w);
+	void addEdge(const T &sourc,const T &dest, T I);
 	bool removeVertex(const T &in);
 	bool removeEdge(const T &sourc, const T &dest);
 	void getPath(const T &origin, const T &dest);
@@ -246,7 +259,18 @@ void Graph<T>::getPath(const T &origin, const T &dest){
 		buffer.pop_front();
 	}
 }
-
+template <class T>
+bool Graph<T>::addVertex(const T &in,double latitude,double longitude) {
+	typename vector<Vertex<T>*>::iterator it= vertexSet.begin();
+	typename vector<Vertex<T>*>::iterator ite= vertexSet.end();
+	for (; it!=ite; it++)
+		if ((*it)->info == in) return false;
+	Vertex<T> *v1 = new Vertex<T>(in);
+	v1->longitude=longitude;
+	v1->latitude=latitude;
+	vertexSet.push_back(v1);
+	return true;
+}
 template <class T>
 void Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
 	typename vector<Vertex<T>*>::iterator it= vertexSet.begin();
@@ -263,6 +287,23 @@ void Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
 	//if (found!=2);
 	vD->indegree++;
 	vS->addEdge(vD,w);
+}
+template <class T>
+void Graph<T>::addEdge(const T &sourc, const T &dest, T I) {
+	typename vector<Vertex<T>*>::iterator it= vertexSet.begin();
+	typename vector<Vertex<T>*>::iterator ite= vertexSet.end();
+	int found=0;
+	Vertex<T> *vS, *vD;
+	while (found!=2 && it!=ite ) {
+		if((*it)->info.compare(sourc)==0) // ( (*it)->info == sourc ), changed to str
+			{ vS=*it; found++;}
+		if((*it)->info.compare(dest)==0)
+			{ vD=*it; found++;}
+		it ++;
+	}
+	//if (found!=2);
+	vD->indegree++;
+	vS->addEdge(vD,I);
 }
 
 

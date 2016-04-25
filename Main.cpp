@@ -16,11 +16,39 @@ using namespace std;
 
 int main() {
 
-	Item item1("cadeira",20,2,10,"1110698247",0001);
-	Item item2("quadro",70,2,10,"1110698276",0002);
+	//Item item1("cadeira",20,2,"1110698247",0001);
+	//Item item2("quadro",70,2,"1110698276",0002);
+
+	string name;
+	int value;
+	string destination;
+	int weight;
+	int receipt;
+
 	Camiao c1(400);
-	c1.items.push_back(&item1);
-	c1.items.push_back(&item2);
+	string temp = "yes";
+
+	while(temp.compare("yes")==0 && cin.good())
+	{
+		cin.clear();
+		cout << "Would you like to add a new item? (yes/no)\n";
+		cin >> temp;
+		if(temp.compare("no")==0) break;
+		cout << "What will be the name of the item? \n";
+		cin >> name;
+		cout << "What will be the value of the item? \n";
+		cin >> value;
+		cout << "What will the weight of the item be? \n";
+		cin >> weight;
+		cout << "What will be the id of the destination? \n";
+		cin >> destination;
+		cout << "What will be the receipt number? \n";
+		cin >> receipt;
+		Item item1(name,value,weight,destination,receipt);
+		c1.items.push_back(item1);
+
+	}
+
 
 	string node_s;
 	string node_f;
@@ -67,7 +95,7 @@ int main() {
 		{
 			for(unsigned int j = 0;j < grafo->path_res.size();j++)
 				{
-					if(c1.items[k]->dest == grafo->path_res[j])
+					if(c1.items[k].dest.compare(grafo->path_res[j])==0)
 					{
 						cout << "Item was sucessfully delived to " << grafo->path_res[j] <<"\n";
 					}

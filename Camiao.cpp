@@ -36,9 +36,4 @@ vector<string> Camiao::getDestinos_atuais()
 	return destinos_atuais;
 }
 
-void Camiao::loadDestinos(){
-	for(unsigned int x=0; x<items.size();x++ ){
-		destinos_atuais.push_back(items[x]->dest);
-	}
 
-}

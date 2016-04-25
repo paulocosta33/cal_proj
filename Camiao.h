@@ -22,12 +22,12 @@ class Camiao
 {
 	public:
 	 Camiao(int capacidadePeso);
-	 vector <Item *> items;
+	 vector <Item > items;
 	 int getPeso();
 	 int getId();
 	 void setId(int id);
 	 void loadDestinos();
-	 vector <Item *> getItems(){return items;}
+	 vector <Item > getItems(){return items;}
 	 vector <string> getDestinos_atuais();
 	 vector <string> destinos_atuais;
 

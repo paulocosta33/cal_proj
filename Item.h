@@ -25,16 +25,20 @@ class Item
    	string getDest();
    	int getFatura();
   	int getPeso();
-  	int getVolume();
-   	Item(string nome,int valor, int peso, int volume, string destino, int fatura);
+   	Item(string nome,int valor, int peso, string destino, int fatura);
+   	Item(){
+   		peso = 0;
+   		fatura = 0;
+   		valor = 0;
+   	};
  	string dest;
-
-   private:
-   	string nome;
+	string nome;
    	double valor;
    	int fatura;
-   	int volume;
    	int peso;
+
+   private:
+
 };
 
 

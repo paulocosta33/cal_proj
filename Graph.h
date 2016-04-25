@@ -21,10 +21,13 @@ const int NOT_VISITED = 0;
 const int BEING_VISITED = 1;
 const int DONE_VISITED = 2;
 const int INT_INFINITY = 1000000;
+const int V = 4;
+const int INF = 99999;
 
 template <class T> class Graph;
 template <class T> class Vertex;
 template <class T> class Edge;
+
 
 /* ================================================================================================
  * Class Edge
@@ -35,16 +38,28 @@ class Edge {
 
 public:
 	Edge(Vertex<T> *d, double w);
+	Edge(Vertex<T> *d,T I);
 	friend class Graph<T>;
 	friend class Vertex<T>;
 	Vertex<T> * dest;
 	double weight;
+	string nome;
+	T info;
+	bool duploSentido;
 	Edge();
 };
 
 template <class T>
-Edge<T>::Edge(Vertex<T> *d, double w): dest(d), weight(w){}
-
+Edge<T>::Edge(Vertex<T> *d, double w): dest(d), weight(w)
+{
+	duploSentido = false;
+}
+template <class T>
+Edge<T>::Edge(Vertex<T> *d,T I): dest(d),info(I)
+{
+	duploSentido = false;
+	weight = 0;
+};
 
 /*
  * ================================================================================================
@@ -59,22 +74,21 @@ public:
 	bool visited;
 	bool processing;
 	int indegree;
-	double dist; //distancia acumulada
+	string id;
+	double dist; //dist acumulada
 	double latitude;
 	double longitude;
 	Vertex(T in);
 	vector<Edge<T>  > adj;
 	friend class Graph<T>;
 	Vertex* path;
-	void addEdge(Vertex<T> *dest, double w);
+	//void addEdge(Vertex<T> *dest, double w);
+	void addEdge(Vertex<T> *dest, T info);
 	bool removeEdgeTo(Vertex<T> *d);
-
 	T getInfo() const;
 	void setInfo(T info);
-
 	int getDist() const;
 	int getIndegree() const;
-
 	bool operator<(const Vertex<T> vertex);
 
 
@@ -95,20 +109,23 @@ bool Vertex<T>::removeEdgeTo(Vertex<T> *d) {
 	return false;
 }
 
-//atualizado pelo exercício 5
+
 template <class T>
 Vertex<T>::Vertex(T in): info(in), visited(false), processing(false), indegree(0), dist(0) {
+	latitude = 0;
+	longitude = 0;
 	path = NULL;
 }
 
 
 template <class T>
-void Vertex<T>::addEdge(Vertex<T> *dest, double w) {
-	Edge<T> edgeD(dest,w);
+void Vertex<T>::addEdge(Vertex<T> *dest, T info)
+{
+	Edge<T> edgeD(dest,info);
 	adj.push_back(edgeD);
 }
 
-//--
+
 template <class T>
 T Vertex<T>::getInfo() const {
 	return this->info;
@@ -145,20 +162,26 @@ struct vertex_greater_than {
  */
 template <class T>
 class Graph {
-	vector<Vertex<T> *> vertexSet;
+
 	void dfs(Vertex<T> *v, vector<T> &res) const;
 	int numCycles; //
 	void dfsVisit(Vertex<T> *v);
 	void dfsVisit();
 
-	//exercicio 6
+
 	int ** W;   //weight
 	int ** P;   //path
 
 public:
+	Graph()
+	{P = NULL;
+	 W = 0;
+	 numCycles = 0;
+	};
 	Graph(vector<Vertex<T>*> v);
-	bool addVertex(const T &in);
-	void addEdge(const T &sourc,const T &dest, double w);
+	vector<Vertex<T> *> vertexSet;
+	bool addVertex(const T &in,double latitude,double longitude);
+	void addEdge(const T &sourc,const T &dest, T I);
 	bool removeVertex(const T &in);
 	bool removeEdge(const T &sourc, const T &dest);
 	void getPath(const T &origin, const T &dest);
@@ -168,8 +191,6 @@ public:
 	int maxNewChildren(Vertex<T> *v, T &inf) const;
 	vector<Vertex<T> * > getVertexSet() const;
 	int getNumVertex() const;
-
-	//exercicio 5
 	Vertex<T>* getVertex(const T &v) const;
 	void resetIndegrees();
 	vector<Vertex<T>*> getSources() const;
@@ -177,10 +198,10 @@ public:
 	vector<T> topologicalOrder();
 	void unweightedShortestPath(const T &v);
 	bool isDAG();
-
-	//exercicio 6
-	void bellmanFordShortestPath(const T &s);
-	void dijkstraShortestPath(const T &s);
+	void getfloydWarshallPath(const T &origin, const T &dest);
+	void getfloydWarshallPathAux(int index1, int index2, vector<T> & res);
+	int edgeCost(int vOrigIndex, int vDestIndex);
+	void floydWarshallShortestPath();
 };
 
 template <class T>
@@ -190,6 +211,8 @@ Graph<T>::Graph(vector<Vertex<T>*> v){
 	numCycles = 0;
 	vertexSet =v;
 };
+
+
 
 template <class T>
 Vertex<T>* Graph<T>::getVertex(const T &v) const {
@@ -241,7 +264,21 @@ void Graph<T>::getPath(const T &origin, const T &dest){
 }
 
 template <class T>
-void Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
+bool Graph<T>::addVertex(const T &in,double latitude,double longitude) {
+	typename vector<Vertex<T>*>::iterator it= vertexSet.begin();
+	typename vector<Vertex<T>*>::iterator ite= vertexSet.end();
+	for (; it!=ite; it++)
+		if ((*it)->info == in) return false;
+	Vertex<T> *v1 = new Vertex<T>(in);
+	v1->longitude=longitude;
+	v1->latitude=latitude;
+	vertexSet.push_back(v1);
+	return true;
+}
+
+
+template <class T>
+void Graph<T>::addEdge(const T &sourc, const T &dest, T I) {
 	typename vector<Vertex<T>*>::iterator it= vertexSet.begin();
 	typename vector<Vertex<T>*>::iterator ite= vertexSet.end();
 	int found=0;
@@ -255,58 +292,117 @@ void Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
 	}
 	//if (found!=2);
 	vD->indegree++;
-	vS->addEdge(vD,w);
+	vS->addEdge(vD,I);
 }
+
+template<class T>
+void Graph<T>::getfloydWarshallPath(const T &origin, const T &dest){
+
+	int originIndex = -1, destinationIndex = -1;
+
+	for(unsigned int i = 0; i < vertexSet.size(); i++)
+	{
+		if(vertexSet[i]->info == origin)
+			originIndex = i;
+		if(vertexSet[i]->info == dest)
+			destinationIndex = i;
+
+		if(originIndex != -1 && destinationIndex != -1)
+			break;
+	}
+
+
+
+	//se nao foi encontrada solucao possivel, retorna lista vazia
+	if(W[originIndex][destinationIndex] == INT_INFINITY)
+	{}
+
+	path_res.push_back(vertexSet[originIndex]->info);
+
+	//se houver pontos intermedios...
+	if(P[originIndex][destinationIndex] != -1)
+	{
+		int intermedIndex = P[originIndex][destinationIndex];
+
+		getfloydWarshallPathAux(originIndex, intermedIndex, path_res);
+
+		path_res.push_back(vertexSet[intermedIndex]->info);
+
+		getfloydWarshallPathAux(intermedIndex,destinationIndex, path_res);
+	}
+
+	path_res.push_back(vertexSet[destinationIndex]->info);
+
+
+	//return res;
+}
+
 
 
 template<class T>
-void Graph<T>::dijkstraShortestPath(const T &s)
-
+void Graph<T>::getfloydWarshallPathAux(int index1, int index2, vector<T> & res)
 {
+	if(P[index1][index2] != -1)
+	{
+		getfloydWarshallPathAux(index1, P[index1][index2], res);
 
-	for(unsigned int i = 0; i < vertexSet.size(); i++) {
-		vertexSet[i]->path = NULL;
-		vertexSet[i]->dist = INT_INFINITY;
-		vertexSet[i]->processing = false;
-	}
+		res.push_back(vertexSet[P[index1][index2]]->info);
 
-	Vertex<T>* v = getVertex(s); //v is the starter vertex
-	v->dist = 0;
-
-	vector< Vertex<T>* > pq; //pq is a vector with all the vertex
-	pq.push_back(v);
-
-	make_heap(pq.begin(), pq.end());
-
-
-	while( !pq.empty() ) {
-
-		v = pq.front();
-		pop_heap(pq.begin(), pq.end());
-		pq.pop_back();
-
-		for(unsigned int i = 0; i < v->adj.size(); i++) { // adj are the adj edge
-			Vertex<T>* w = v->adj[i].dest;    //w -> vertice de destino da edge
-
-
-			if(v->dist + v->adj[i].weight < w->dist ) {
-
-				//for(int k =0 ; k < getFrota.size(); k )
-				w->dist = v->dist + v->adj[i].weight;
-				w->path = v;
-
-				//se já estiver na lista, apenas a actualiza
-				if(!w->processing)
-				{
-					w->processing = true;
-					pq.push_back(w);
-				}
-
-				make_heap (pq.begin(),pq.end(),vertex_greater_than<T>());
-			}
-		}
+		getfloydWarshallPathAux(P[index1][index2],index2, res);
 	}
 }
+
+template<class T>
+int Graph<T>::edgeCost(int vOrigIndex, int vDestIndex)
+{
+	if(vertexSet[vOrigIndex] == vertexSet[vDestIndex])
+		return 0;
+
+	for(unsigned int i = 0; i < vertexSet[vOrigIndex]->adj.size(); i++)
+	{
+		if(vertexSet[vOrigIndex]->adj[i].dest == vertexSet[vDestIndex])
+			return vertexSet[vOrigIndex]->adj[i].weight;
+	}
+
+	return INT_INFINITY;
+}
+
+template<class T>
+void Graph<T>::floydWarshallShortestPath() {
+
+	W = new int * [vertexSet.size()];
+	P = new int * [vertexSet.size()];
+	for(unsigned int i = 0; i < vertexSet.size(); i++)
+	{
+		W[i] = new int[vertexSet.size()];
+		P[i] = new int[vertexSet.size()];
+		for(unsigned int j = 0; j < vertexSet.size(); j++)
+		{
+			W[i][j] = edgeCost(i,j);
+			P[i][j] = -1;
+		}
+	}
+
+	for(unsigned int k = 0; k < vertexSet.size(); k++)
+		for(unsigned int i = 0; i < vertexSet.size(); i++)
+			for(unsigned int j = 0; j < vertexSet.size(); j++)
+			{
+				//se somarmos qualquer coisa ao valor INT_INFINITY, ocorre overflow, o que resulta num valor negativo, logo nem convém considerar essa soma
+				if(W[i][k] == INT_INFINITY || W[k][j] == INT_INFINITY)
+					continue;
+
+				int val = min ( W[i][j], W[i][k]+W[k][j] );
+				if(val != W[i][j])
+				{
+					W[i][j] = val;
+					P[i][j] = k;
+				}
+			}
+
+}
+
+
+
 
 
 

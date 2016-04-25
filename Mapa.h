@@ -1,12 +1,14 @@
 /*
- * Mapa.h
+ * mapa2.h
  *
- *  Created on: 19/04/2016
- *      Author: up201404022
+ *  Created on: 23/04/2016
+ *      Author: Utilizador
  */
 
 #ifndef MAPA_H_
 #define MAPA_H_
+
+
 #include <iostream>
 #include <string>
 #include <stdlib.h>
@@ -16,43 +18,117 @@
 #include <cmath>
 #include "Graph.h"
 #include <fstream>
-
+#include <string>
+#include <sstream>
 using namespace std;
-
 template <class T>
 class Mapa
 {
+
 public:
-	Mapa(){};
-	void readFiles(){
-	fstream nodes;
-	string node_id;
-	string node_lat;
-	string node_lon;
-	string lixo;
-	nodes.open("ficheiro.txt");
-	while (nodes)
+    Mapa(){};
+    Graph<string>* readfiles()
 	{
-		getline(nodes, node_id, ';');
-		getline(nodes, node_lat, ';');
-		getline(nodes, node_lon, ';');
-		getline(nodes, lixo);
-		Vertex<T> node(node_id);
-		node.info = node_id;
-		node.latitude = atof(node_lat.c_str());
-		node.longitude = atof(node_lon.c_str());
-		cout << node.info << ";";//<< node.latitude << ";" << node.longitude;*/
+
+    	Graph<string>* grafo= new Graph<string>();
+    	string line;
+    	string info;
+        fstream file1;
+        file1.open("ficheiro.txt");
+    	fstream file2;
+    	file2.open("ficheiro2.txt");
+    	fstream file3;
+    	file3.open("ficheiro3.txt");
+    	double latitude;
+    	double longitude;
+    	while(getline(file1,line))
+    	{
+    		stringstream linestream(line);
+    		string data;
+
+    		getline(linestream, data,';');
+    		info = data;
+
+    		getline(linestream, data,';');
+    		latitude =atof(data.c_str());
+
+    		getline(linestream,data,';');
+    		longitude =atof(data.c_str());
+
+    		grafo->addVertex(info,latitude,longitude);
+    	}
+    	string vertexS;
+    	string vertexD;
+    	while(getline(file3,line))
+    	{
+    		stringstream linestream(line);
+    		string data;
+
+
+    		getline(linestream, data,';');
+    		info = data;
+
+    		getline(linestream, data,';');
+    		vertexS =data;
+
+    		getline(linestream,data,';');
+    		vertexD =data;
+
+
+    		grafo->addEdge(vertexS,vertexD,info);
+
+    	}
+
+    	string roadname;
+    	string two_way;
+    	while(getline(file2,line))
+    	{
+    		stringstream linestream(line);
+    		string data;
+
+
+    		getline(linestream, data,';');
+    		info = data;
+
+    		getline(linestream, data,';');
+    		roadname = data;
+
+    		getline(linestream,data);
+    		two_way = data;
+
+    		if (two_way=="True")
+    		{
+    			for (int i=0; i < grafo->vertexSet.size();i++)
+    			{
+    				for(int j=0; j<grafo->vertexSet[i]->adj.size(); j++)
+    				{
+    					if(grafo->vertexSet[i]->adj[j].info==info)
+    					{
+    						vertexS=grafo->vertexSet[i]->adj[j].dest->info;
+    						vertexD=grafo->vertexSet[i]->info;
+    						grafo->addEdge(vertexS,vertexD,info);
+    					}
+    				}
+
+    			}
+    		}
+    	}
+
+    	for (int i=0; i < grafo->vertexSet.size();i++)
+    	{
+    		for(int j=0; j<grafo->vertexSet[i]->adj.size(); j++)
+    		{
+    			grafo->vertexSet[i]->adj[j].weight=sqrt(pow(grafo->vertexSet[i]->latitude - grafo->vertexSet[i]->adj[j].dest->latitude,2)+pow(grafo->vertexSet[i]->longitude - grafo->vertexSet[i]->adj[j].dest->longitude,2));
+    		}
+        }
+    	return grafo;
 	}
-}
 
-	private:
-	//Graph grafo;
-	//vector<Vertex<T>> nodes;
-	//vector<Edge<T>> Edges;
-	//vector<Vertex<T>*>  vertices;
 
-	
+
 };
+
+
 
 
 

@@ -69,7 +69,7 @@ Edge<T>::Edge(Vertex<T> *d,T I): dest(d),info(I)
 template <class T>
 class Vertex {
 public:
-	//Vertex();
+	Vertex();
 	T info;
 	bool visited;
 	bool processing;

@@ -21,10 +21,9 @@ using namespace std;
 class Camiao
 {
 	public:
-	 Camiao(int capacidadeVolume,int capacidadePeso);
+	 Camiao(int capacidadePeso);
 	 vector <Item *> items;
 	 int getPeso();
-	 int getVolume();
 	 int getId();
 	 void setId(int id);
 	 void loadDestinos();
@@ -32,9 +31,7 @@ class Camiao
 	 vector <string> getDestinos_atuais();
 	 vector <string> destinos_atuais;
 
-
-	private:
-	 int capacidade_volume;
+	 private:
 	 int capacidade_peso;
 	 int id;
 };

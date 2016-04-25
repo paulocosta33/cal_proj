@@ -242,26 +242,6 @@ bool Graph<T>::isDAG() {
 	return (getNumCycles() == 0);
 }
 
-template<class T>
-void Graph<T>::getPath(const T &origin, const T &dest){
-
-	list<T> buffer;
-	Vertex<T>* v = getVertex(dest);
-
-	buffer.push_front(v->info);
-	while ( v->path != NULL &&  v->path->info != origin) {
-		v = v->path;
-		buffer.push_front(v->info);
-	}
-	if( v->path != NULL )
-		buffer.push_front(v->path->info);
-
-
-	while( !buffer.empty() ) {
-		path_res.push_back( buffer.front() );
-		buffer.pop_front();
-	}
-}
 
 template <class T>
 bool Graph<T>::addVertex(const T &in,double latitude,double longitude) {
@@ -312,14 +292,12 @@ void Graph<T>::getfloydWarshallPath(const T &origin, const T &dest){
 	}
 
 
-
-	//se nao foi encontrada solucao possivel, retorna lista vazia
 	if(W[originIndex][destinationIndex] == INT_INFINITY)
 	{}
 
 	path_res.push_back(vertexSet[originIndex]->info);
 
-	//se houver pontos intermedios...
+
 	if(P[originIndex][destinationIndex] != -1)
 	{
 		int intermedIndex = P[originIndex][destinationIndex];
@@ -333,8 +311,6 @@ void Graph<T>::getfloydWarshallPath(const T &origin, const T &dest){
 
 	path_res.push_back(vertexSet[destinationIndex]->info);
 
-
-	//return res;
 }
 
 

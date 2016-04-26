@@ -27,6 +27,16 @@ class Menu
 public:
 	Frota* frota= new Frota();
 	vector<Item*> items;
+	//
+	string node_s;
+	string node_f;
+	Mapa<string> m;
+	Graph<string>* grafo= m.readfiles();
+	string mp; 
+	string ans;
+	vector<string> must_points;
+	vector<string> mp_ordered;
+	//
 	Menu(){};
 	template <typename T>
 	string NumberToString ( T Number )
@@ -35,6 +45,68 @@ public:
 		ss << Number;
 		return ss.str();
 	}
+	double dist_calc(double long1,double lat1,double long2, double lat2)
+	{
+		double dlong = long2 - long1;
+		double dlat = lat2 - lat1;
+		double res;
+		res = sqrt((double)dlong*dlong + dlat*dlat);
+		return res;
+	}
+
+static bool sort_lesser_than(double u, double v)
+{
+   return u < v;
+}
+
+vector<string> orderMP(string node_ss, vector<string> mustp,Graph<string>* g){
+	vector<string> mp_order;
+	double d1,d2,d3,d4;
+	int s_tag;
+	vector<double> mp_distini;
+	vector<double> mp_distini_ordered;
+	vector<int> indice;
+	for(unsigned int u =0; u < g->vertexSet.size();u++)
+	{
+		if(g->vertexSet[u]->info == node_ss) s_tag = u;
+	}
+	for(unsigned int y= 0;y < mustp.size(); y++)
+	{
+		for(unsigned int x =0; x < g->vertexSet.size();x++)
+		{
+			if(mustp[y].compare(g->vertexSet[x]->info)==0)
+			{
+				d1 = g->vertexSet[s_tag]->longitude;
+				d2 = g->vertexSet[s_tag]->latitude;
+				d3 = g->vertexSet[x]->longitude;
+				d4 = g->vertexSet[x]->latitude;
+				//distancia de cada mustpasspoint ao inicio
+				mp_distini.push_back(dist_calc(d1,d2,d3,d4));
+			}
+		}
+	}
+
+	mp_distini_ordered = mp_distini;
+	sort(mp_distini_ordered.begin(),mp_distini_ordered.end(),sort_lesser_than);
+
+	for(unsigned int i =0; i<mp_distini.size();i++)
+	{
+		for(unsigned int j=0; j<mp_distini_ordered.size();j++)
+		{
+			if (mp_distini[i]==mp_distini_ordered[j])
+			{
+				indice.push_back(j);
+			}
+		}
+	}
+
+	for(unsigned int z=0; z<mp_order.size();z++)
+	{
+		mp_order[z] = mustp[indice[z]];
+	}
+	return mp_order;
+}
+
 	void menuFrota()
 	{
 		int opcao;
@@ -194,7 +266,76 @@ public:
 		}
 		if(opcao==4)
 		{
-			menu1();
+			//menu1();
+			grafo->floydWarshallShortestPath();
+			for(int i =0; i < items.size();i++)
+			{
+				must_points.push_back(items[i].dest);	
+			}
+			cout << "Please select the id of the starter node: \n";
+			cin >> node_s;
+			cout << "Please select the id of the finnish node: \n";
+			cin >> node_f;
+			
+			cout << "Are there any more must pass point? (yes/no)\n";
+			cin >> ans;
+			if(ans.compare("yes")==0)
+			{
+				while (mp.compare("done")!=0)
+				{
+					cin.clear();
+					cout << "Please add the must pass points (done when you finnish)\n";
+					cin >> mp;
+					must_points.push_back(mp);
+
+				}
+				must_points.pop_back();
+
+		mp_ordered = must_points;
+		mp_ordered = orderMP(node_s, must_points,grafo);
+
+		cout << "The shortest path is: \n";
+
+		grafo->getfloydWarshallPath(node_s,mp_ordered[0]);
+		for(unsigned int i = 1;i < mp_ordered.size() -1;i++)
+		{
+			grafo->getfloydWarshallPath(mp_ordered[i],mp_ordered[i+1]);
+		}
+		grafo->getfloydWarshallPath(mp_ordered[mp_ordered.size()-1],node_f);
+
+
+		for(unsigned int k = 0;k < grafo->path_res.size();k++)
+		{
+			cout << grafo->path_res[k] << " ";
+		}
+		cout << endl;
+
+		for(unsigned int k = 0;k < c1.items.size();k++)
+		{
+			for(unsigned int j = 0;j < grafo->path_res.size();j++)
+				{
+					if(c1.items[k].dest.compare(grafo->path_res[j])==0)
+					{
+						cout << "Item was sucessfully delived to " << grafo->path_res[j] <<"\n";
+					}
+				}
+		}
+	}
+	else
+	{
+		cout << "The shortest path is: \n";
+		grafo->getfloydWarshallPath(node_s,node_f);
+		for(unsigned int k = 0;k < grafo->path_res.size();k++)
+		{
+			cout << grafo->path_res[k] << " ";
+		}
+	}
+	cout << endl;
+
+
+
+}
+			
 		}
 	}
 
